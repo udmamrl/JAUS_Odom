@@ -1,0 +1,19 @@
+<package>
+  <description brief="JAUS_Odom">
+
+     JAUS_Odom
+
+  </description>
+  <author>AMRL</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/JAUS_Odom</url>
+  <depend package="std_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="kdl"/>
+
+</package>
+
+
