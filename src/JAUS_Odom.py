@@ -57,14 +57,16 @@ class JAUS_Odom(object):
         # subscribe Hushy - odom here
         rospy.Subscriber('husky_odom', Odometry, self.Handle_HuskyOdom)
         # subscribe IMU here
-        rospy.Subscriber('KVH_imu/data', Imu, self.HandleImu)
+        rospy.Subscriber('imu/data', Imu, self.HandleImu)
         # publish odometry data here
         self.JAUS_Odom_Publisher = rospy.Publisher("JAUS_Odom", Odometry)    
 
         # Initialize odometry message
         self.JAUS_Odom = Odometry()
         
-        #test
+        # TODO should have new pose.covariance table
+        
+        #These are for test
         #self.JAUS_Imu_Publisher = rospy.Publisher("imu/data", Imu)    
         #self.JAUS_Imu_Publisher.publish(Imu())
    
@@ -74,17 +76,22 @@ class JAUS_Odom(object):
         self.JAUS_Odom.header=odom.header
         # publish data when GPS update 
         self.JAUS_Odom_Publisher.publish(self.JAUS_Odom)
+        
+        
         #rospy.loginfo('Got position data[ x:%s y:%s z:%s ]' %(odom.pose.pose.position.x,odom.pose.pose.position.y,odom.pose.pose.position.z))
 
     def Handle_HuskyOdom(self,odom):
         # use Husky odom update twist(speed) data 
         self.JAUS_Odom.twist=odom.twist
+        
+        
         #rospy.loginfo('Got twist data[ Vx:%s Va:%s ]' %(odom.twist.twist.linear.x,odom.twist.twist.angular.z))
         #self.JAUS_Imu_Publisher.publish(Imu())
 
     def HandleImu(self,imu):
         # use imu update orientation data
         self.JAUS_Odom.pose.pose.orientation=imu.orientation
+
         #rospy.loginfo('Got imu data[ xyzw : (%s,%s,%s,%s) ]' % (imu.orientation.x,imu.orientation.y,imu.orientation.z,imu.orientation.w))
 
 if __name__ == "__main__":
