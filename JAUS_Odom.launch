@@ -1,7 +1,7 @@
 <launch>
   <node pkg="JAUS_Odom" type="JAUS_Odom.py" name="JAUS_Odom" respawn="true" output="screen">
-    <remap from="gps_odom"   to="gps_odom"/>
-    <remap from="husky_odom" to="encoder"/>
+    <remap from="gps_odom"   to="gpsOdom"/>
+    <remap from="husky_odom" to="odom"/>
     <remap from="imu/data"   to="KVH_imu/data"/>
   </node>
 </launch>
