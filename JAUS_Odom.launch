@@ -1,11 +1,4 @@
 <launch>
-  <node pkg="gps_common" type="utm_odometry_node" name="utm_odometry_node" respawn="true" output="screen">
-        <param name="rot_covariance" value="99999" />
-        <param name="frame_id" value="base_footprint" />
-        <remap from="fix"  to= "gps/fix" />
-        <remap from="odom" to= "gps_Odom" />
-  </node>
-
   <node pkg="JAUS_Odom" type="JAUS_Odom.py" name="JAUS_Odom" respawn="true" output="screen">
     <remap from="gps_odom"   to="gps_odom"/>
     <remap from="husky_odom" to="encoder"/>
