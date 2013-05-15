@@ -63,7 +63,7 @@ class JAUS_Odom(object):
 
         # Initialize odometry message
         self.JAUS_Odom = Odometry()
-        
+        self.has_imu_data=0
         # TODO should have new pose.covariance table
         
         #These are for test
@@ -74,8 +74,9 @@ class JAUS_Odom(object):
         # use gps odom update position data 
         self.JAUS_Odom.pose.pose.position=odom.pose.pose.position
         self.JAUS_Odom.header=odom.header
-        # publish data when GPS update 
-        self.JAUS_Odom_Publisher.publish(self.JAUS_Odom)
+        # publish data when GPS update
+        if (self.has_imu_data): 
+            self.JAUS_Odom_Publisher.publish(self.JAUS_Odom)
         
         
         #rospy.loginfo('Got position data[ x:%s y:%s z:%s ]' %(odom.pose.pose.position.x,odom.pose.pose.position.y,odom.pose.pose.position.z))
@@ -83,6 +84,7 @@ class JAUS_Odom(object):
     def Handle_HuskyOdom(self,odom):
         # use Husky odom update twist(speed) data 
         self.JAUS_Odom.twist=odom.twist
+        self.has_imu_data=1
         
         
         #rospy.loginfo('Got twist data[ Vx:%s Va:%s ]' %(odom.twist.twist.linear.x,odom.twist.twist.angular.z))
