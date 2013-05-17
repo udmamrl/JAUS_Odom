@@ -50,20 +50,26 @@ class JAUS_Odom(object):
     def __init__(self):
         rospy.init_node('JAUS_Odom')
         # Parameters
-
+        self.Use_Odom_Home = rospy.get_param('~Use_Odom_Home',False)
+        self.Odom_Home_x   = rospy.get_param('~Odom_Home_x'  ,0.0)
+        self.Odom_Home_y   = rospy.get_param('~Odom_Home_y'  ,0.0)
+        if (self.Use_Odom_Home):
+            rospy.loginfo('JAUS Odometry Home set to (%s,%s) in JAUS_Odom' %( self.Odom_Home_x, self.Odom_Home_y))
+        
+    
         # Set up publishers/subscribers
-        # subscribe GPS - odom here
+        # subscribe GPS - odom here , for x,y
         rospy.Subscriber('gps_odom', Odometry, self.Handle_GpsOdom)
-        # subscribe Hushy - odom here
+        # subscribe Hushy - odom here, for speed
         rospy.Subscriber('husky_odom', Odometry, self.Handle_HuskyOdom)
-        # subscribe IMU here
+        # subscribe IMU here, for orientation
         rospy.Subscriber('imu/data', Imu, self.HandleImu)
         # publish odometry data here
         self.JAUS_Odom_Publisher = rospy.Publisher("JAUS_Odom", Odometry)    
 
         # Initialize odometry message
         self.JAUS_Odom = Odometry()
-        self.has_imu_data=0
+        self.has_imu_data=False
         # TODO should have new pose.covariance table
         
         #These are for test
@@ -73,6 +79,11 @@ class JAUS_Odom(object):
     def Handle_GpsOdom(self,odom):
         # use gps odom update position data 
         self.JAUS_Odom.pose.pose.position=odom.pose.pose.position
+        if (self.Use_Odom_Home):
+            #rospy.loginfo('JAUS Odometry Home set to (%s,%s) in JAUS_Odom' %( self.Odom_Home_x, self.Odom_Home_y))
+            self.JAUS_Odom.pose.pose.position.x=self.JAUS_Odom.pose.pose.position.x-self.Odom_Home_x
+            self.JAUS_Odom.pose.pose.position.y=self.JAUS_Odom.pose.pose.position.y-self.Odom_Home_y
+            
         self.JAUS_Odom.header=odom.header
         # publish data when GPS update
         if (self.has_imu_data): 
@@ -84,7 +95,7 @@ class JAUS_Odom(object):
     def Handle_HuskyOdom(self,odom):
         # use Husky odom update twist(speed) data 
         self.JAUS_Odom.twist=odom.twist
-        self.has_imu_data=1
+        self.has_imu_data=True
         
         
         #rospy.loginfo('Got twist data[ Vx:%s Va:%s ]' %(odom.twist.twist.linear.x,odom.twist.twist.angular.z))
